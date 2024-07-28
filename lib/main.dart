@@ -133,9 +133,9 @@ class _mainFunctionState extends State<mainFunction> {
       myIcon = w.weatherIcon.toString();
       myMaxTemp = w.tempMax!.celsius!.toStringAsPrecision(4);
       myMinTemp = w.tempMin!.celsius!.toStringAsPrecision(4);
-      // o1 = w.tempFeelsLike.toString();
+      o1 = w.tempFeelsLike.toString();
       // o1=w.areaName.toString();
-      o1 = w.weatherConditionCode.toString();
+      // o1 = w.weatherConditionCode.toString();
       print("Max Temp : ${myMaxTemp}");
       print("Min Temp : ${myMinTemp}");
       print("FeelsLike : ${o1}");
