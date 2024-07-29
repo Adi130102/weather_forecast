@@ -30,10 +30,16 @@ class _mainFunctionState extends State<mainFunction> {
   String myIcon = "";
   String myMaxTemp = "";
   String myMinTemp = "";
-
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    callAllFunctionDirectly();
+  }
   Future<Position> _determinePosition() async {
     bool serviceEnabled;
     LocationPermission permission;
+
 
     // Test if location services are enabled.
     // serviceEnabled = await Geolocator.isLocationServiceEnabled();
@@ -65,6 +71,9 @@ class _mainFunctionState extends State<mainFunction> {
       return Future.error(
           'Location permissions are permanently denied, we cannot request permissions.');
     }
+    showDialog(context: context, builder: (context) {
+      return Center(child: CircularProgressIndicator());
+    },);
     Position position = await Geolocator.getCurrentPosition(
         desiredAccuracy: LocationAccuracy.high);
     List<Placemark> placemarks =
@@ -157,6 +166,18 @@ class _mainFunctionState extends State<mainFunction> {
       currentDate = DateFormat('dd/MM/yyyy').format(now);
       print("currentDate is ${currentDate}");
     });
+    Navigator.of(context).pop();
+  }
+  void callAllFunctionDirectly() async{
+    await _determinePosition();
+    await WeathereAditya();
+    currentDateTime();
+  }
+  Future<void> refresh() async{
+    await Future.delayed(Duration.zero);
+    setState(() {
+      callAllFunctionDirectly();
+    });
   }
 
   @override
@@ -169,156 +190,155 @@ class _mainFunctionState extends State<mainFunction> {
         ),
         backgroundColor: Colors.deepPurple,
       ),
-      body: SafeArea(
-        child: Center(
-          child: SingleChildScrollView(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Container(
-                  child: Image.network(
-                      "https://openweathermap.org/img/wn/${myIcon}@2x.png"),
-                  // child: Image.network(
-                  //     "https://openweathermap.org/img/wn/10d@2x.png"),
-                ),
-                Container(
-                  child: Text(
-                    myTemperature,
-                    style: TextStyle(fontSize: 30),
+      body: RefreshIndicator(
+        onRefresh: refresh,
+        child: SafeArea(
+          child: Center(
+            child: SingleChildScrollView(
+              physics: AlwaysScrollableScrollPhysics(),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Container(
+                    child: myIcon.isEmpty?Image.asset("Assets/Weather.png",height: 200.0,width: 200.0,):Image.network(
+                        "https://openweathermap.org/img/wn/${myIcon}@2x.png"),
+
+                    // child: Image.network(
+                    //     "https://openweathermap.org/img/wn/10d@2x.png"),
                   ),
-                ),
-                Container(
-                  child: Text("FeelsLike : ${o1}"),
-                ),
-                SizedBox(
-                  height: 10.0,
-                ),
-                Container(
-                  child: Text(
-                    myAtmosphere,
-                    style: TextStyle(fontSize: 30),
+                  Container(
+                    child: Text(
+                      myTemperature,
+                      style: TextStyle(fontSize: 30),
+                    ),
                   ),
-                ),
-                SizedBox(
-                  height: 30.0,
-                ),
-                Container(
-                  child: Text(
-                    "${currentDate}  ${currentTime}",
-                    style: TextStyle(fontSize: 20),
+                  Container(
+                    child: Text("FeelsLike : ${o1}"),
                   ),
-                ),
-                SizedBox(
-                  height: 30.0,
-                ),
-                Container(
-                  // padding: EdgeInsets.symmetric(horizontal: 50.0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      Container(
-                        child: Column(
-                          children: [
-                            Container(
-                              child: Image.asset(
-                                "Assets/sun.png",
-                                width: 80,
-                                height: 100,
-                              ),
-                            ),
-                            Container(
-                              child: Column(
-                                children: [Text("Sunrise"), Text(sunRise)],
-                              ),
-                            ),
-                          ],
-                        ),
-                      ), //Sunrise
-                      Container(
-                        child: Column(
-                          children: [
-                            Container(
-                              child: Image.asset(
-                                "Assets/sunset.png",
-                                width: 80,
-                                height: 100,
-                              ),
-                            ),
-                            Container(
-                              child: Column(
-                                children: [Text("Sunset"), Text(sunSet)],
-                              ),
-                            ),
-                          ],
-                        ),
-                      ), //Sunset
-                    ],
+                  SizedBox(
+                    height: 10.0,
                   ),
-                ),
-                SizedBox(
-                  height: 5.0,
-                ),
-                Container(
-                  // padding: EdgeInsets.symmetric(horizontal: 50.0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      Container(
-                        child: Column(
-                          children: [
-                            Container(
-                              child: Image.asset(
-                                "Assets/high-temperature.png",
-                                width: 70,
-                                height: 70,
-                              ),
-                            ),
-                            Container(
-                              child: Column(
-                                children: [
-                                  Text("Max Temp"),
-                                  Text("${myMaxTemp}°C")
-                                ],
-                              ),
-                            ),
-                          ],
-                        ),
-                      ), //Sunrise
-                      Container(
-                        child: Column(
-                          children: [
-                            Container(
-                              child: Image.asset(
-                                "Assets/low-temperature.png",
-                                width: 70,
-                                height: 70,
-                              ),
-                            ),
-                            Container(
-                              child: Column(
-                                children: [
-                                  Text("Min Temp"),
-                                  Text("${myMinTemp}°C")
-                                ],
-                              ),
-                            ),
-                          ],
-                        ),
-                      ), //Sunset
-                    ],
+                  Container(
+                    child: Text(
+                      myAtmosphere,
+                      style: TextStyle(fontSize: 30),
+                    ),
                   ),
-                ),
-                SizedBox(
-                  height: 50.0,
-                ),
-                ElevatedButton(
-                    onPressed: () async {
-                      await _determinePosition();
-                      await WeathereAditya();
-                      currentDateTime();
-                    },
-                    child: Text(myLocation))
-              ],
+                  SizedBox(
+                    height: 30.0,
+                  ),
+                  Container(
+                    child: Text(
+                      "${currentDate}  ${currentTime}",
+                      style: TextStyle(fontSize: 20),
+                    ),
+                  ),
+                  SizedBox(
+                    height: 30.0,
+                  ),
+                  Container(
+                    // padding: EdgeInsets.symmetric(horizontal: 50.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        Container(
+                          child: Column(
+                            children: [
+                              Container(
+                                child: Image.asset(
+                                  "Assets/sun.png",
+                                  width: 80,
+                                  height: 100,
+                                ),
+                              ),
+                              Container(
+                                child: Column(
+                                  children: [Text("Sunrise"), Text(sunRise)],
+                                ),
+                              ),
+                            ],
+                          ),
+                        ), //Sunrise
+                        Container(
+                          child: Column(
+                            children: [
+                              Container(
+                                child: Image.asset(
+                                  "Assets/sunset.png",
+                                  width: 80,
+                                  height: 100,
+                                ),
+                              ),
+                              Container(
+                                child: Column(
+                                  children: [Text("Sunset"), Text(sunSet)],
+                                ),
+                              ),
+                            ],
+                          ),
+                        ), //Sunset
+                      ],
+                    ),
+                  ),
+                  SizedBox(
+                    height: 5.0,
+                  ),
+                  Container(
+                    // padding: EdgeInsets.symmetric(horizontal: 50.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        Container(
+                          child: Column(
+                            children: [
+                              Container(
+                                child: Image.asset(
+                                  "Assets/high-temperature.png",
+                                  width: 70,
+                                  height: 70,
+                                ),
+                              ),
+                              Container(
+                                child: Column(
+                                  children: [
+                                    Text("Max Temp"),
+                                    Text("${myMaxTemp}°C")
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                        ), //Sunrise
+                        Container(
+                          child: Column(
+                            children: [
+                              Container(
+                                child: Image.asset(
+                                  "Assets/low-temperature.png",
+                                  width: 70,
+                                  height: 70,
+                                ),
+                              ),
+                              Container(
+                                child: Column(
+                                  children: [
+                                    Text("Min Temp"),
+                                    Text("${myMinTemp}°C")
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                        ), //Sunset
+                      ],
+                    ),
+                  ),
+                  SizedBox(
+                    height: 50.0,
+                  ),
+                  Text(myLocation)
+                ],
+              ),
             ),
           ),
         ),

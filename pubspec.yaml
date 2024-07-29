@@ -73,6 +73,7 @@ flutter:
     - Assets/sunset.png
     - Assets/low-temperature.png
     - Assets/high-temperature.png
+    - Assets/Weather.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware
