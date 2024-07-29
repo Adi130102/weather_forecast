@@ -78,7 +78,7 @@ class _mainFunctionState extends State<mainFunction> {
     if (permission == LocationPermission.deniedForever) {
       // Permissions are denied forever, handle appropriately.
       myLocation =
-      "Location permissions are permanently denied, we cannot request permissions.";
+          "Location permissions are permanently denied, we cannot request permissions.";
       return Future.error(
           'Location permissions are permanently denied, we cannot request permissions.');
     }
@@ -91,7 +91,7 @@ class _mainFunctionState extends State<mainFunction> {
     Position position = await Geolocator.getCurrentPosition(
         desiredAccuracy: LocationAccuracy.high);
     List<Placemark> placemarks =
-    await placemarkFromCoordinates(position.latitude, position.longitude);
+        await placemarkFromCoordinates(position.latitude, position.longitude);
     Placemark place = placemarks[0];
     try {
       setState(() {
@@ -106,9 +106,9 @@ class _mainFunctionState extends State<mainFunction> {
         // print("country : ${place.country}");
 
         myLocation =
-        // "Address : ${place.street}, ${place.thoroughfare}, ${place.locality}, ${place.administrativeArea}, ${place.postalCode}, ${place.country}."
-        // "Address : ${place.name} ${place.subAdministrativeArea}, ${place.thoroughfare}, ${place.subLocality}, ${place.postalCode}, ${place.locality}, ${place.administrativeArea}, ${place.country}"
-        "Address : ${place.name}, ${place.street}, ${place.subLocality}, ${place.administrativeArea}, ${place.postalCode}, ${place.country}"
+            // "Address : ${place.street}, ${place.thoroughfare}, ${place.locality}, ${place.administrativeArea}, ${place.postalCode}, ${place.country}."
+            // "Address : ${place.name} ${place.subAdministrativeArea}, ${place.thoroughfare}, ${place.subLocality}, ${place.postalCode}, ${place.locality}, ${place.administrativeArea}, ${place.country}"
+            "Address : ${place.name}, ${place.street}, ${place.subLocality}, ${place.administrativeArea}, ${place.postalCode}, ${place.country}"
             "\n\nLatitude : ${position.latitude} \nLongitude : ${position.longitude} \nAltitude : ${position.altitude}";
         print(myLocation);
         lat = position.latitude;
@@ -130,7 +130,7 @@ class _mainFunctionState extends State<mainFunction> {
   Future<void> WeathereAditya() async {
     if (lat != null) {
       WeatherFactory wf =
-      new WeatherFactory("617a4272b293ee938fd8451ce1c1a5ec");
+          new WeatherFactory("617a4272b293ee938fd8451ce1c1a5ec");
       Weather w = await wf.currentWeatherByLocation(lat, lon);
 
       // print("Temperature is ${w.temperature?.celsius?.toString()}");
@@ -229,10 +229,10 @@ class _mainFunctionState extends State<mainFunction> {
                     color: Colors.blue,
                     child: myIcon.isEmpty
                         ? Image.asset(
-                      "Assets/Weather.png",
-                    )
+                            "Assets/Weather.png",
+                          )
                         : Image.network(
-                        "https://openweathermap.org/img/wn/${myIcon}@2x.png"),
+                            "https://openweathermap.org/img/wn/${myIcon}@2x.png"),
 
                     // child: Image.network(
                     //     "https://openweathermap.org/img/wn/10d@2x.png"),
@@ -243,7 +243,7 @@ class _mainFunctionState extends State<mainFunction> {
                   Container(
                     child: Text(
                       myTemperature,
-                      style: TextStyle(fontSize: 50,color: Colors.blue),
+                      style: TextStyle(fontSize: 50, color: Colors.blue),
                     ),
                   ),
                   Container(
@@ -343,7 +343,10 @@ class _mainFunctionState extends State<mainFunction> {
                               ),
                               Container(
                                 child: Column(
-                                  children: [Text("Max Temp"), Text("${myMaxTemp} °C")],
+                                  children: [
+                                    Text("Max Temp"),
+                                    Text("${myMaxTemp} °C")
+                                  ],
                                 ),
                               ),
                             ],
@@ -361,7 +364,10 @@ class _mainFunctionState extends State<mainFunction> {
                               ),
                               Container(
                                 child: Column(
-                                  children: [Text("Min Temp"), Text("${myMinTemp} °C")],
+                                  children: [
+                                    Text("Min Temp"),
+                                    Text("${myMinTemp} °C")
+                                  ],
                                 ),
                               ),
                             ],
@@ -399,7 +405,10 @@ class _mainFunctionState extends State<mainFunction> {
                               ),
                               Container(
                                 child: Column(
-                                  children: [Text("Pressure"), Text("${myPressure} hPa")],
+                                  children: [
+                                    Text("Pressure"),
+                                    Text("${myPressure} hPa")
+                                  ],
                                 ),
                               ),
                             ],
@@ -417,7 +426,10 @@ class _mainFunctionState extends State<mainFunction> {
                               ),
                               Container(
                                 child: Column(
-                                  children: [Text("Humidity"), Text("${myHumidity}%")],
+                                  children: [
+                                    Text("Humidity"),
+                                    Text("${myHumidity}%")
+                                  ],
                                 ),
                               ),
                             ],
@@ -455,7 +467,10 @@ class _mainFunctionState extends State<mainFunction> {
                               ),
                               Container(
                                 child: Column(
-                                  children: [Text("Wind Speed"), Text("${myWindSpeed} m/s")],
+                                  children: [
+                                    Text("Wind Speed"),
+                                    Text("${myWindSpeed} m/s")
+                                  ],
                                 ),
                               ),
                             ],
@@ -473,7 +488,10 @@ class _mainFunctionState extends State<mainFunction> {
                               ),
                               Container(
                                 child: Column(
-                                  children: [Text("Wind Gust"), Text(myWindGust)],
+                                  children: [
+                                    Text("Wind Gust"),
+                                    Text(myWindGust)
+                                  ],
                                 ),
                               ),
                             ],
@@ -511,7 +529,10 @@ class _mainFunctionState extends State<mainFunction> {
                               ),
                               Container(
                                 child: Column(
-                                  children: [Text("WeatherMain"), Text(myWeatherMain)],
+                                  children: [
+                                    Text("WeatherMain"),
+                                    Text(myWeatherMain)
+                                  ],
                                 ),
                               ),
                             ],
@@ -529,7 +550,10 @@ class _mainFunctionState extends State<mainFunction> {
                               ),
                               Container(
                                 child: Column(
-                                  children: [Text("Wind Degree"), Text("${myWindDegree}°")],
+                                  children: [
+                                    Text("Wind Degree"),
+                                    Text("${myWindDegree}°")
+                                  ],
                                 ),
                               ),
                             ],
@@ -560,7 +584,6 @@ class _mainFunctionState extends State<mainFunction> {
                     padding: const EdgeInsets.only(left: 30.0),
                     child: Text(myLocation),
                   ),
-
                 ],
               ),
             ),
