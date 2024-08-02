@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:geocoding/geocoding.dart';
@@ -6,60 +5,76 @@ import 'package:weather/weather.dart';
 import 'package:intl/intl.dart';
 
 void main() {
-  runApp(MaterialApp(home: mainFunction(), debugShowCheckedModeBanner: false));
+  runApp(const MaterialApp(home: MainFunction(), debugShowCheckedModeBanner: false));
 }
 
-class mainFunction extends StatefulWidget {
-  const mainFunction({super.key});
+class MainFunction extends StatefulWidget {
+  const MainFunction({super.key});
 
   @override
-  State<mainFunction> createState() => _mainFunctionState();
+  State<MainFunction> createState() => _MainFunctionState();
 }
 
-class _mainFunctionState extends State<mainFunction> {
+class _MainFunctionState extends State<MainFunction> {
+  TextEditingController mycityField = TextEditingController();
   String myLocation = "Current Location";
-  var lat;
-  var lon;
-  String myTemperature = "";
-  String myAtmosphere = "";
+  double lat=0;
+  double lon=0;
+  String myTemperature = "0";
+  String myAtmosphere = "0";
   String currentTime = "";
   String currentDate = "";
   String sunRise = "";
   String sunSet = "";
   String o1 = "";
   String myIcon = "";
-  String myMaxTemp = "";
-  String myMinTemp = "";
-  String myFeelsLike = "";
-  String myPressure = "";
-  String myHumidity = "";
-  String myWindDegree = "";
-  String myWindSpeed = "";
-  String myWindGust = "";
-  String myArea = "";
+  String myMaxTemp = "0";
+  String myMinTemp = "0";
+  String myFeelsLike = "0";
+  String myPressure = "0";
+  String myHumidity = "0";
+  String myWindDegree = "0";
+  String myWindSpeed = "0";
+  String myWindGust = "0";
+  String myArea = "City";
   String myWeatherMain = "";
   String myweatherConditionCode = "";
+  String myCity = "Ahmedabad";
+  int flag = 0;
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
+
     callAllFunctionDirectly();
   }
 
-  Future<Position> _determinePosition() async {
-    bool serviceEnabled;
-    LocationPermission permission;
+  // Future<void> checkConnectivity() async {
+  //   // var connectivityResult = await Connectivity().checkConnectivity();
+  //   var connectivityResult = await Connectivity().checkConnectivity();
+  //   if (connectivityResult == ConnectivityResult.none) {
+  //   // if (connectivityResult == connectivityResult.isEmpty) {
+  //     showDialog(
+  //       context: context,
+  //       builder: (context) {
+  //         return AlertDialog(
+  //           title: Text("No Internet Connection"),
+  //           backgroundColor: Colors.blueAccent,
+  //           content: Text("Please check your internet connection and try again"),
+  //           actions: [
+  //             TextButton(onPressed: (){
+  //               Navigator.of(context).pop();
+  //             }, child: Text("OK"))
+  //           ],
+  //         );
+  //       },
+  //     );
+  //   }
+  // }
 
-    // Test if location services are enabled.
-    serviceEnabled = await Geolocator.isLocationServiceEnabled();
-    if (!serviceEnabled) {
-      // Location services are not enabled don't continue
-      // accessing the position and request users of the
-      // App to enable the location services.
-      myLocation = "Location services are disabled.";
-      return Future.error('Location services are disabled.');
-    }
+  Future<Position> _determinePosition() async {
+    LocationPermission permission;
 
     permission = await Geolocator.checkPermission();
     if (permission == LocationPermission.denied) {
@@ -78,44 +93,33 @@ class _mainFunctionState extends State<mainFunction> {
     if (permission == LocationPermission.deniedForever) {
       // Permissions are denied forever, handle appropriately.
       myLocation =
-          "Location permissions are permanently denied, we cannot request permissions.";
+      "Location permissions are permanently denied, we cannot request permissions.";
       return Future.error(
           'Location permissions are permanently denied, we cannot request permissions.');
     }
     showDialog(
       context: context,
       builder: (context) {
-        return Center(child: CircularProgressIndicator());
+        return const Center(child: CircularProgressIndicator());
       },
     );
     Position position = await Geolocator.getCurrentPosition(
         desiredAccuracy: LocationAccuracy.high);
     List<Placemark> placemarks =
-        await placemarkFromCoordinates(position.latitude, position.longitude);
+    await placemarkFromCoordinates(position.latitude, position.longitude);
     Placemark place = placemarks[0];
     try {
       setState(() {
-        // print("name : ${place.name}");
-        // print("subLocality : ${place.subLocality}");
-        // // print("thoroughfare : ${place.thoroughfare}");
-        // // print("subThroughFare : ${place.subThoroughfare}");
-        // print("administrativeArea : ${place.administrativeArea}");
-        // // print("subAdministrativeArea : ${place.subAdministrativeArea}");
-        // print("postalCode : ${place.postalCode}");
-        // print("street : ${place.street}");
-        // print("country : ${place.country}");
-
         myLocation =
-            // "Address : ${place.street}, ${place.thoroughfare}, ${place.locality}, ${place.administrativeArea}, ${place.postalCode}, ${place.country}."
-            // "Address : ${place.name} ${place.subAdministrativeArea}, ${place.thoroughfare}, ${place.subLocality}, ${place.postalCode}, ${place.locality}, ${place.administrativeArea}, ${place.country}"
-            "Address : ${place.name}, ${place.street}, ${place.subLocality}, ${place.administrativeArea}, ${place.postalCode}, ${place.country}"
-            "\n\nLatitude : ${position.latitude} \nLongitude : ${position.longitude} \nAltitude : ${position.altitude}";
-        print(myLocation);
+        // "Address : ${place.street}, ${place.thoroughfare}, ${place.locality}, ${place.administrativeArea}, ${place.postalCode}, ${place.country}."
+        // "Address : ${place.name} ${place.subAdministrativeArea}, ${place.thoroughfare}, ${place.subLocality}, ${place.postalCode}, ${place.locality}, ${place.administrativeArea}, ${place.country}"
+        "Address : ${place.name}, ${place.street}, ${place.subLocality}, ${place
+            .administrativeArea}, ${place.postalCode}, ${place.country}"
+            "\n\nLatitude : ${position.latitude} \nLongitude : ${position
+            .longitude} \nAltitude : ${position.altitude}";
+        // print(myLocation);
         lat = position.latitude;
         lon = position.longitude;
-        // setState(() {
-        //   WeathereAditya();
-        // });
       });
     } catch (e) {
       setState(() {
@@ -127,11 +131,19 @@ class _mainFunctionState extends State<mainFunction> {
     return await Geolocator.getCurrentPosition();
   }
 
-  Future<void> WeathereAditya() async {
-    if (lat != null) {
-      WeatherFactory wf =
-          new WeatherFactory("617a4272b293ee938fd8451ce1c1a5ec");
-      Weather w = await wf.currentWeatherByLocation(lat, lon);
+  Future<void> weathereByCity() async {
+    WeatherFactory wf =
+    WeatherFactory("617a4272b293ee938fd8451ce1c1a5ec");
+    if (flag == 1) {
+      if (mycityField.text.isNotEmpty) {
+        myCity=mycityField.text.trim();
+      }
+      if(mycityField.text.isEmpty){
+        myCity="Ahmedabad";
+        mycityField.text="Ahmedabad";
+      }
+      mycityField.text=myCity;
+      Weather w = await wf.currentWeatherByCityName(myCity);
 
       // print("Temperature is ${w.temperature?.celsius?.toString()}");
       myTemperature = "${w.temperature?.celsius?.toStringAsPrecision(4)}° C";
@@ -148,8 +160,9 @@ class _mainFunctionState extends State<mainFunction> {
       // sunSet=w.sunset.toString();
       // sunSet = DateFormat("dd-MM-yyyy hh:mm:ss a").format(w.sunset!);
       sunSet = DateFormat("hh:mm:ss a").format(w.sunset!);
-      print(
-          "Sunset : ${DateFormat('dd-MM-yyyy hh:mm:ss a').format(w.sunset!)}");
+      // print(
+      //     "Sunset : ${DateFormat('dd-MM-yyyy hh:mm:ss a').format(
+      //         w.sunset!)}");
 
       // o1=w.areaName.toString();
       // o1=w.cloudiness.toString();
@@ -170,8 +183,51 @@ class _mainFunctionState extends State<mainFunction> {
       // print("FeelsLike : ${myFeelsLike}");
 
       setState(() {});
-    } else {
-      myTemperature = "Cannot Fetch Temperature without Location";
+    }
+
+  }
+
+  Future<void> PreciseLocationAditya() async {
+    if (flag == 0) {
+      WeatherFactory wf =
+      new WeatherFactory("617a4272b293ee938fd8451ce1c1a5ec");
+      Weather w = await wf.currentWeatherByLocation(lat, lon);
+      // Weather w = await wf.currentWeatherByCityName(myCity);
+
+      // print("Temperature is ${w.temperature?.celsius?.toString()}");
+      myTemperature = "${w.temperature?.celsius?.toStringAsPrecision(4)}° C";
+
+      myAtmosphere = w.weatherDescription.toString();
+      // print("Atmosphere is ${myAtmosphere}");
+
+      // sunRise=w.sunrise.toString();
+      // sunRise = DateFormat("dd-MM-yyyy hh:mm:ss a").format(w.sunrise!);
+      sunRise = DateFormat("hh:mm:ss a").format(w.sunrise!);
+      // print(
+      //     "Sunrise : ${DateFormat("dd-MM-yyyy hh:mm:ss a").format(w.sunrise!)}");
+
+      // sunSet=w.sunset.toString();
+      // sunSet = DateFormat("dd-MM-yyyy hh:mm:ss a").format(w.sunset!);
+      sunSet = DateFormat("hh:mm:ss a").format(w.sunset!);
+      print(
+          "Sunset : ${DateFormat('dd-MM-yyyy hh:mm:ss a').format(
+              w.sunset!)}");
+
+      // o1=w.areaName.toString();
+      // o1=w.cloudiness.toString();
+      myIcon = w.weatherIcon.toString();
+      myMaxTemp = w.tempMax!.celsius!.toStringAsPrecision(4);
+      myMinTemp = w.tempMin!.celsius!.toStringAsPrecision(4);
+      myFeelsLike = w.tempFeelsLike.toString();
+      myPressure = w.pressure!.toString();
+      myHumidity = w.humidity.toString();
+      myWindDegree = w.windDegree.toString();
+      myWindSpeed = w.windSpeed.toString();
+      myArea = w.areaName.toString();
+      myWeatherMain = w.weatherMain.toString();
+      myweatherConditionCode = w.weatherConditionCode.toString();
+      myWindGust = w.windGust.toString();
+      mycityField.text=myArea;
       setState(() {});
     }
   }
@@ -187,12 +243,17 @@ class _mainFunctionState extends State<mainFunction> {
       // print("currentDate is ${currentDate}");
     });
     Navigator.of(context).pop();
+    FocusScope.of(context).unfocus();
   }
 
   void callAllFunctionDirectly() async {
+    // await checkConnectivity();
     await _determinePosition();
-    await WeathereAditya();
+    await weathereByCity();
+    await PreciseLocationAditya();
     currentDateTime();
+    FocusScope.of(context).unfocus();
+
   }
 
   Future<void> refresh() async {
@@ -224,15 +285,67 @@ class _mainFunctionState extends State<mainFunction> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Container(
+                    color: Colors.blue,
+                    padding: EdgeInsets.symmetric(horizontal: 30.0),
+                    child: Column(
+                      children: [
+                        SizedBox(
+                          height: 15,
+                        ),
+                        Container(
+                          child: TextField(
+                            controller: mycityField,
+                            decoration: InputDecoration(
+                                fillColor: Colors.white,
+                                hintText: "Enter your City name",
+                                label: Text(
+                                  "city",
+                                  style: TextStyle(color: Colors.white),
+                                ),
+                                border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(15.0)),
+                                prefixIcon: IconButton(
+                                  icon: Icon(
+                                    Icons.search,
+                                    color: Colors.white,
+                                  ),
+                                  onPressed: () {
+                                    FocusScope.of(context).unfocus();
+                                    flag = 1;
+                                    callAllFunctionDirectly();
+
+                                  },
+                                ),
+                                suffixIcon: IconButton(
+                                  icon: Icon(Icons.my_location),
+                                  onPressed: () {
+                                    FocusScope.of(context).unfocus();
+                                    flag = 0;
+                                    callAllFunctionDirectly();
+                                  },
+                                )),
+                            onEditingComplete: () {
+                              FocusScope.of(context).unfocus();
+                              setState(() {
+                                flag = 1;
+                                callAllFunctionDirectly();
+                              });
+                            },
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Container(
                     width: double.maxFinite,
                     height: 100,
                     color: Colors.blue,
                     child: myIcon.isEmpty
                         ? Image.asset(
-                            "Assets/Weather.png",
-                          )
+                      "Assets/Weather.png",
+                    )
                         : Image.network(
-                            "https://openweathermap.org/img/wn/${myIcon}@2x.png"),
+                        "https://openweathermap.org/img/wn/${myIcon}@2x.png"),
 
                     // child: Image.network(
                     //     "https://openweathermap.org/img/wn/10d@2x.png"),
