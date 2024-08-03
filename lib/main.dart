@@ -1,3 +1,6 @@
+import 'dart:math';
+
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:geocoding/geocoding.dart';
@@ -5,7 +8,8 @@ import 'package:weather/weather.dart';
 import 'package:intl/intl.dart';
 
 void main() {
-  runApp(const MaterialApp(home: MainFunction(), debugShowCheckedModeBanner: false));
+  runApp(const MaterialApp(
+      home: MainFunction(), debugShowCheckedModeBanner: false));
 }
 
 class MainFunction extends StatefulWidget {
@@ -18,8 +22,8 @@ class MainFunction extends StatefulWidget {
 class _MainFunctionState extends State<MainFunction> {
   TextEditingController mycityField = TextEditingController();
   String myLocation = "Current Location";
-  double lat=0;
-  double lon=0;
+  double lat = 0;
+  double lon = 0;
   String myTemperature = "0";
   String myAtmosphere = "0";
   String currentTime = "";
@@ -41,6 +45,15 @@ class _MainFunctionState extends State<MainFunction> {
   String myweatherConditionCode = "";
   String myCity = "Ahmedabad";
   int flag = 0;
+  List<dynamic> names = [
+    "Aditya",
+    "Patel",
+    "33",
+    "202300819010088",
+    "GLS University",
+    "MScIT",
+    "Sem-3"
+  ];
 
   @override
   void initState() {
@@ -96,7 +109,7 @@ class _MainFunctionState extends State<MainFunction> {
       // Permissions are denied forever, handle appropriately.
       setState(() {
         myLocation =
-        "Location permissions are permanently denied, we cannot request permissions.";
+            "Location permissions are permanently denied, we cannot request permissions.";
       });
       return Future.error(
           'Location permissions are permanently denied, we cannot request permissions.');
@@ -113,25 +126,23 @@ class _MainFunctionState extends State<MainFunction> {
     Position position = await Geolocator.getCurrentPosition(
         desiredAccuracy: LocationAccuracy.high);
     List<Placemark> placemarks =
-    await placemarkFromCoordinates(position.latitude, position.longitude);
+        await placemarkFromCoordinates(position.latitude, position.longitude);
     Placemark place = placemarks[0];
 
     try {
       setState(() {
         myLocation =
-        // "Address : ${place.street}, ${place.thoroughfare}, ${place.locality}, ${place.administrativeArea}, ${place.postalCode}, ${place.country}."
-        // "Address : ${place.name} ${place.subAdministrativeArea}, ${place.thoroughfare}, ${place.subLocality}, ${place.postalCode}, ${place.locality}, ${place.administrativeArea}, ${place.country}"
-        "Address : ${place.name}, ${place.street}, ${place.subLocality}, ${place
-            .administrativeArea}, ${place.postalCode}, ${place.country}"
-            "\n\nLatitude : ${position.latitude} \nLongitude : ${position
-            .longitude} \nAltitude : ${position.altitude}";
+            // "Address : ${place.street}, ${place.thoroughfare}, ${place.locality}, ${place.administrativeArea}, ${place.postalCode}, ${place.country}."
+            // "Address : ${place.name} ${place.subAdministrativeArea}, ${place.thoroughfare}, ${place.subLocality}, ${place.postalCode}, ${place.locality}, ${place.administrativeArea}, ${place.country}"
+            "Address : ${place.name}, ${place.street}, ${place.subLocality}, ${place.administrativeArea}, ${place.postalCode}, ${place.country}"
+            "\n\nLatitude : ${position.latitude} \nLongitude : ${position.longitude} \nAltitude : ${position.altitude}";
         // print(myLocation);
         lat = position.latitude;
         lon = position.longitude;
       });
     } catch (e) {
       setState(() {
-        myLocation = "Failed to get Location : $e"  ;
+        myLocation = "Failed to get Location : $e";
       });
     }
     // When we reach here, permissions are granted and we can
@@ -141,103 +152,100 @@ class _MainFunctionState extends State<MainFunction> {
   }
 
   Future<void> weathereByCity() async {
-    WeatherFactory wf =
-    WeatherFactory("617a4272b293ee938fd8451ce1c1a5ec");
+    WeatherFactory wf = WeatherFactory("617a4272b293ee938fd8451ce1c1a5ec");
     if (flag == 1) {
-        if (mycityField.text.isNotEmpty) {
-          myCity=mycityField.text.trim();
-        }
-        if(mycityField.text.isEmpty){
-          myCity="Ahmedabad";
-          mycityField.text="Ahmedabad";
-        }
-        mycityField.text=myCity;
-        Weather w = await wf.currentWeatherByCityName(myCity);
-
-        // print("Temperature is ${w.temperature?.celsius?.toString()}");
-        myTemperature = "${w.temperature?.celsius?.toStringAsPrecision(4)}° C";
-
-        myAtmosphere = w.weatherDescription.toString();
-        // print("Atmosphere is ${myAtmosphere}");
-
-        // sunRise=w.sunrise.toString();
-        // sunRise = DateFormat("dd-MM-yyyy hh:mm:ss a").format(w.sunrise!);
-        sunRise = DateFormat("hh:mm:ss a").format(w.sunrise!);
-        // print(
-        //     "Sunrise : ${DateFormat("dd-MM-yyyy hh:mm:ss a").format(w.sunrise!)}");
-
-        // sunSet=w.sunset.toString();
-        // sunSet = DateFormat("dd-MM-yyyy hh:mm:ss a").format(w.sunset!);
-        sunSet = DateFormat("hh:mm:ss a").format(w.sunset!);
-        // print(
-        //     "Sunset : ${DateFormat('dd-MM-yyyy hh:mm:ss a').format(
-        //         w.sunset!)}");
-
-        // o1=w.areaName.toString();
-        // o1=w.cloudiness.toString();
-        myIcon = w.weatherIcon.toString();
-        myMaxTemp = w.tempMax!.celsius!.toStringAsPrecision(4);
-        myMinTemp = w.tempMin!.celsius!.toStringAsPrecision(4);
-        myFeelsLike = w.tempFeelsLike.toString();
-        myPressure = w.pressure!.toString();
-        myHumidity = w.humidity.toString();
-        myWindDegree = w.windDegree.toString();
-        myWindSpeed = w.windSpeed.toString();
-        myArea = w.areaName.toString();
-        myWeatherMain = w.weatherMain.toString();
-        myweatherConditionCode = w.weatherConditionCode.toString();
-        myWindGust = w.windGust.toString();
-        // print("Max Temp : ${myMaxTemp}");
-        // print("Min Temp : ${myMinTemp}");
-        // print("FeelsLike : ${myFeelsLike}");
-
-        setState(() {});
+      if (mycityField.text.isNotEmpty) {
+        myCity = mycityField.text.trim();
       }
+      if (mycityField.text.isEmpty) {
+        myCity = "Ahmedabad";
+        mycityField.text = "Ahmedabad";
+      }
+      mycityField.text = myCity;
+      Weather w = await wf.currentWeatherByCityName(myCity);
 
+      // print("Temperature is ${w.temperature?.celsius?.toString()}");
+      myTemperature = "${w.temperature?.celsius?.toStringAsPrecision(4)}° C";
+
+      myAtmosphere = w.weatherDescription.toString();
+      // print("Atmosphere is ${myAtmosphere}");
+
+      // sunRise=w.sunrise.toString();
+      // sunRise = DateFormat("dd-MM-yyyy hh:mm:ss a").format(w.sunrise!);
+      sunRise = DateFormat("hh:mm:ss a").format(w.sunrise!);
+      // print(
+      //     "Sunrise : ${DateFormat("dd-MM-yyyy hh:mm:ss a").format(w.sunrise!)}");
+
+      // sunSet=w.sunset.toString();
+      // sunSet = DateFormat("dd-MM-yyyy hh:mm:ss a").format(w.sunset!);
+      sunSet = DateFormat("hh:mm:ss a").format(w.sunset!);
+      // print(
+      //     "Sunset : ${DateFormat('dd-MM-yyyy hh:mm:ss a').format(
+      //         w.sunset!)}");
+
+      // o1=w.areaName.toString();
+      // o1=w.cloudiness.toString();
+      myIcon = w.weatherIcon.toString();
+      myMaxTemp = w.tempMax!.celsius!.toStringAsPrecision(4);
+      myMinTemp = w.tempMin!.celsius!.toStringAsPrecision(4);
+      myFeelsLike = w.tempFeelsLike.toString();
+      myPressure = w.pressure!.toString();
+      myHumidity = w.humidity.toString();
+      myWindDegree = w.windDegree.toString();
+      myWindSpeed = w.windSpeed.toString();
+      myArea = w.areaName.toString();
+      myWeatherMain = w.weatherMain.toString();
+      myweatherConditionCode = w.weatherConditionCode.toString();
+      myWindGust = w.windGust.toString();
+      // print("Max Temp : ${myMaxTemp}");
+      // print("Min Temp : ${myMinTemp}");
+      // print("FeelsLike : ${myFeelsLike}");
+
+      setState(() {});
+    }
   }
 
   Future<void> preciseLocationAditya() async {
     if (flag == 0) {
-        WeatherFactory wf =
-        WeatherFactory("617a4272b293ee938fd8451ce1c1a5ec");
-        Weather w = await wf.currentWeatherByLocation(lat, lon);
-        // Weather w = await wf.currentWeatherByCityName(myCity);
+      WeatherFactory wf = WeatherFactory("617a4272b293ee938fd8451ce1c1a5ec");
+      Weather w = await wf.currentWeatherByLocation(lat, lon);
+      // Weather w = await wf.currentWeatherByCityName(myCity);
 
-        // print("Temperature is ${w.temperature?.celsius?.toString()}");
-        myTemperature = "${w.temperature?.celsius?.toStringAsPrecision(4)}° C";
+      // print("Temperature is ${w.temperature?.celsius?.toString()}");
+      myTemperature = "${w.temperature?.celsius?.toStringAsPrecision(4)}° C";
 
-        myAtmosphere = w.weatherDescription.toString();
-        // print("Atmosphere is ${myAtmosphere}");
+      myAtmosphere = w.weatherDescription.toString();
+      // print("Atmosphere is ${myAtmosphere}");
 
-        // sunRise=w.sunrise.toString();
-        // sunRise = DateFormat("dd-MM-yyyy hh:mm:ss a").format(w.sunrise!);
-        sunRise = DateFormat("hh:mm:ss a").format(w.sunrise!);
-        // print(
-        //     "Sunrise : ${DateFormat("dd-MM-yyyy hh:mm:ss a").format(w.sunrise!)}");
+      // sunRise=w.sunrise.toString();
+      // sunRise = DateFormat("dd-MM-yyyy hh:mm:ss a").format(w.sunrise!);
+      sunRise = DateFormat("hh:mm:ss a").format(w.sunrise!);
+      // print(
+      //     "Sunrise : ${DateFormat("dd-MM-yyyy hh:mm:ss a").format(w.sunrise!)}");
 
-        // sunSet=w.sunset.toString();
-        // sunSet = DateFormat("dd-MM-yyyy hh:mm:ss a").format(w.sunset!);
-        sunSet = DateFormat("hh:mm:ss a").format(w.sunset!);
-        // print(
-        //     "Sunset : ${DateFormat('dd-MM-yyyy hh:mm:ss a').format(
-        //         w.sunset!)}");
+      // sunSet=w.sunset.toString();
+      // sunSet = DateFormat("dd-MM-yyyy hh:mm:ss a").format(w.sunset!);
+      sunSet = DateFormat("hh:mm:ss a").format(w.sunset!);
+      // print(
+      //     "Sunset : ${DateFormat('dd-MM-yyyy hh:mm:ss a').format(
+      //         w.sunset!)}");
 
-        // o1=w.areaName.toString();
-        // o1=w.cloudiness.toString();
-        myIcon = w.weatherIcon.toString();
-        myMaxTemp = w.tempMax!.celsius!.toStringAsPrecision(4);
-        myMinTemp = w.tempMin!.celsius!.toStringAsPrecision(4);
-        myFeelsLike = w.tempFeelsLike.toString();
-        myPressure = w.pressure!.toString();
-        myHumidity = w.humidity.toString();
-        myWindDegree = w.windDegree.toString();
-        myWindSpeed = w.windSpeed.toString();
-        myArea = w.areaName.toString();
-        myWeatherMain = w.weatherMain.toString();
-        myweatherConditionCode = w.weatherConditionCode.toString();
-        myWindGust = w.windGust.toString();
-        mycityField.text=myArea;
-        setState(() {});
+      // o1=w.areaName.toString();
+      // o1=w.cloudiness.toString();
+      myIcon = w.weatherIcon.toString();
+      myMaxTemp = w.tempMax!.celsius!.toStringAsPrecision(4);
+      myMinTemp = w.tempMin!.celsius!.toStringAsPrecision(4);
+      myFeelsLike = w.tempFeelsLike.toString();
+      myPressure = w.pressure!.toString();
+      myHumidity = w.humidity.toString();
+      myWindDegree = w.windDegree.toString();
+      myWindSpeed = w.windSpeed.toString();
+      myArea = w.areaName.toString();
+      myWeatherMain = w.weatherMain.toString();
+      myweatherConditionCode = w.weatherConditionCode.toString();
+      myWindGust = w.windGust.toString();
+      mycityField.text = myArea;
+      setState(() {});
     }
   }
 
@@ -319,7 +327,6 @@ class _MainFunctionState extends State<MainFunction> {
                                   FocusScope.of(context).unfocus();
                                   flag = 1;
                                   callAllFunctionDirectly();
-
                                 },
                               ),
                               suffixIcon: IconButton(
@@ -347,10 +354,10 @@ class _MainFunctionState extends State<MainFunction> {
                     color: Colors.blue,
                     child: myIcon.isEmpty
                         ? Image.asset(
-                      "Assets/Weather.png",
-                    )
+                            "Assets/Weather.png",
+                          )
                         : Image.network(
-                        "https://openweathermap.org/img/wn/$myIcon@2x.png"),
+                            "https://openweathermap.org/img/wn/$myIcon@2x.png"),
 
                     // child: Image.network(
                     //     "https://openweathermap.org/img/wn/10d@2x.png"),
@@ -605,8 +612,8 @@ class _MainFunctionState extends State<MainFunction> {
                   ),
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                    child: Text(
-                        "weatherConditionCode : $myweatherConditionCode"),
+                    child:
+                        Text("weatherConditionCode : $myweatherConditionCode"),
                   ),
                   const Divider(
                     color: Colors.black12,
@@ -616,7 +623,7 @@ class _MainFunctionState extends State<MainFunction> {
                     height: 10.0,
                   ),
                   Padding(
-                    padding: const EdgeInsets.only(left: 30.0),
+                    padding: const EdgeInsets.fromLTRB(30.0, 0, 0, 15.0),
                     child: Text(myLocation),
                   ),
                 ],

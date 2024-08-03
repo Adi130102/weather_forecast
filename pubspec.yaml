@@ -84,8 +84,7 @@ flutter:
     - Assets/wind-vane.png
     - Assets/windsock.png
     - Assets/windsock direction.png
-#    - Assets/sun.png
-#    - Assets/sun.png
+    - Assets/WeatherLogo.gif
 #    - Assets/sun.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
