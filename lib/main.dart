@@ -152,7 +152,7 @@ class _MainFunctionState extends State<MainFunction> {
   }
 
   Future<void> weathereByCity() async {
-    WeatherFactory wf = WeatherFactory("617a4272b293ee938fd8451ce1c1a5ec");
+    WeatherFactory wf = WeatherFactory("API KEY");
     if (flag == 1) {
       if (mycityField.text.isNotEmpty) {
         myCity = mycityField.text.trim();
